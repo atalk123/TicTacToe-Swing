@@ -30,6 +30,9 @@ public class Board {
         cells[row][col] = player;
         return true;
     }
+    public void clearCell(int row, int col) {
+        cells[row][col] = ' ';
+    }
 
     public char getMark(int row, int col) {
         return cells[row][col];

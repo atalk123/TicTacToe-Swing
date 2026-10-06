@@ -13,12 +13,14 @@ import java.awt.*;
 
 public class GamePanel extends JPanel {
     private static final int TURN_SECONDS = 10;
+    private static final int COMPUTER_DELAY_MS = 500;
 
     private final JButton[][] squares = new JButton[3][3];
     private final JLabel turnLabel = new JLabel();
     private final JLabel timerLabel = new JLabel();
     private final Timer turnTimer;
     private Board board = new Board();
+    private ComputerPlayer computer = null;
     private char currentPlayer = 'X';
     private boolean gameOver = false;
     private int secondsLeft = TURN_SECONDS;
@@ -59,8 +61,9 @@ public class GamePanel extends JPanel {
         turnTimer = new Timer(1000, e -> tick());
     }
 
-    public void startNewGame() {
+    public void startNewGame(boolean vsComputer) {
         board = new Board();
+        computer = vsComputer ? new ComputerPlayer('O') : null;
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
                 squares[row][col].setText("");
@@ -75,10 +78,18 @@ public class GamePanel extends JPanel {
     }
 
     public void stopGame() {
+        gameOver = true;
         turnTimer.stop();
     }
 
     private void handleClick(int row, int col) {
+        if (isComputerTurn()) {
+            return;
+        }
+        makeMove(row, col);
+    }
+
+    private void makeMove(int row, int col) {
         if (gameOver) {
             return;
         }
@@ -102,6 +113,18 @@ public class GamePanel extends JPanel {
         switchPlayer();
     }
 
+    private void computerMove() {
+        if (gameOver || !isComputerTurn()) {
+            return;
+        }
+        int[] move = computer.chooseMove(board);
+        makeMove(move[0], move[1]);
+    }
+
+    private boolean isComputerTurn() {
+        return computer != null && currentPlayer == 'O';
+    }
+
     private void tick() {
         secondsLeft--;
         if (secondsLeft == 0) {
@@ -117,6 +140,12 @@ public class GamePanel extends JPanel {
         secondsLeft = TURN_SECONDS;
         updateTimerLabel();
         turnTimer.restart();
+
+        if (isComputerTurn()) {
+            Timer delay = new Timer(COMPUTER_DELAY_MS, e -> computerMove());
+            delay.setRepeats(false);
+            delay.start();
+        }
     }
 
     private void endGame() {
