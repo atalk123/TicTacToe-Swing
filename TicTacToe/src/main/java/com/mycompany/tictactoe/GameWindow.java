@@ -12,107 +12,35 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GameWindow {
-    private static final int TURN_SECONDS = 10;
-
-    private final JButton[][] squares = new JButton[3][3];
-    private final JLabel turnLabel = new JLabel();
-    private final JLabel timerLabel = new JLabel();
-    private final Board board = new Board();
-    private final Timer turnTimer;
-    private char currentPlayer = 'X';
-    private boolean gameOver = false;
-    private int secondsLeft = TURN_SECONDS;
+    private final JFrame frame = new JFrame("Tic Tac Toe");
+    private final CardLayout cards = new CardLayout();
+    private final JPanel screens = new JPanel(cards);
+    private final GamePanel gamePanel;
 
     public GameWindow() {
-        JFrame frame = new JFrame("Tic Tac Toe");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 450);
+        frame.setSize(900, 800);
         frame.setLocationRelativeTo(null);
 
-        Font labelFont = new Font("Arial", Font.BOLD, 24);
-        turnLabel.setFont(labelFont);
-        timerLabel.setFont(labelFont);
-        updateTurnLabel();
-        updateTimerLabel();
+        MenuPanel menuPanel = new MenuPanel(this::startTwoPlayerGame);
+        gamePanel = new GamePanel(this::showMenu);
 
-        JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        topPanel.add(turnLabel, BorderLayout.WEST);
-        topPanel.add(timerLabel, BorderLayout.EAST);
+        screens.add(menuPanel, "menu");
+        screens.add(gamePanel, "game");
 
-        JPanel boardPanel = new JPanel(new GridLayout(3, 3));
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
-                JButton square = new JButton("");
-                square.setFont(new Font("Arial", Font.BOLD, 60));
-                final int r = row;
-                final int c = col;
-                square.addActionListener(e -> handleClick(r, c));
-                squares[row][col] = square;
-                boardPanel.add(square);
-            }
-        }
-
-        frame.add(topPanel, BorderLayout.NORTH);
-        frame.add(boardPanel, BorderLayout.CENTER);
-
-        turnTimer = new Timer(1000, e -> tick());
+        frame.add(screens);
         frame.setVisible(true);
-        turnTimer.start();
+        showMenu();
     }
 
-    private void handleClick(int row, int col) {
-        if (gameOver) {
-            return;
-        }
-        if (!board.placeMark(row, col, currentPlayer)) {
-            return;
-        }
-        squares[row][col].setText(String.valueOf(currentPlayer));
-
-        char winner = board.getWinner();
-        if (winner != ' ') {
-            turnLabel.setText(winner + " wins!");
-            endGame();
-            return;
-        }
-        if (board.isFull()) {
-            turnLabel.setText("Draw!");
-            endGame();
-            return;
-        }
-
-        switchPlayer();
+    private void startTwoPlayerGame() {
+        gamePanel.startNewGame();
+        cards.show(screens, "game");
     }
 
-    private void tick() {
-        secondsLeft--;
-        if (secondsLeft == 0) {
-            switchPlayer();
-        } else {
-            updateTimerLabel();
-        }
-    }
-
-    private void switchPlayer() {
-        currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
-        updateTurnLabel();
-        secondsLeft = TURN_SECONDS;
-        updateTimerLabel();
-        turnTimer.restart();
-    }
-
-    private void endGame() {
-        gameOver = true;
-        turnTimer.stop();
-    }
-
-    private void updateTurnLabel() {
-        turnLabel.setText("Turn: " + currentPlayer);
-    }
-
-    private void updateTimerLabel() {
-        timerLabel.setText("Time: " + secondsLeft);
+    private void showMenu() {
+        gamePanel.stopGame();
+        cards.show(screens, "menu");
     }
 
     public static void main(String[] args) {
