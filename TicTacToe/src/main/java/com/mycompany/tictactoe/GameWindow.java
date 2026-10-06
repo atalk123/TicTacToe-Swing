@@ -19,10 +19,10 @@ public class GameWindow {
 
     public GameWindow() {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(900, 800);
+        frame.setSize(420, 500);
         frame.setLocationRelativeTo(null);
 
-        MenuPanel menuPanel = new MenuPanel(this::startTwoPlayerGame);
+        MenuPanel menuPanel = new MenuPanel(this::startTwoPlayerGame, this::startComputerGame);
         gamePanel = new GamePanel(this::showMenu);
 
         screens.add(menuPanel, "menu");
@@ -34,7 +34,12 @@ public class GameWindow {
     }
 
     private void startTwoPlayerGame() {
-        gamePanel.startNewGame();
+        gamePanel.startNewGame(false);
+        cards.show(screens, "game");
+    }
+
+    private void startComputerGame() {
+        gamePanel.startNewGame(true);
         cards.show(screens, "game");
     }
 
