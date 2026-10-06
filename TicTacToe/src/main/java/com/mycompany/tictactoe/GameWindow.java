@@ -12,11 +12,16 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GameWindow {
+    private static final int TURN_SECONDS = 10;
+
     private final JButton[][] squares = new JButton[3][3];
     private final JLabel turnLabel = new JLabel();
+    private final JLabel timerLabel = new JLabel();
     private final Board board = new Board();
+    private final Timer turnTimer;
     private char currentPlayer = 'X';
     private boolean gameOver = false;
+    private int secondsLeft = TURN_SECONDS;
 
     public GameWindow() {
         JFrame frame = new JFrame("Tic Tac Toe");
@@ -24,9 +29,16 @@ public class GameWindow {
         frame.setSize(400, 450);
         frame.setLocationRelativeTo(null);
 
-        turnLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        turnLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        Font labelFont = new Font("Arial", Font.BOLD, 24);
+        turnLabel.setFont(labelFont);
+        timerLabel.setFont(labelFont);
         updateTurnLabel();
+        updateTimerLabel();
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        topPanel.add(turnLabel, BorderLayout.WEST);
+        topPanel.add(timerLabel, BorderLayout.EAST);
 
         JPanel boardPanel = new JPanel(new GridLayout(3, 3));
         for (int row = 0; row < 3; row++) {
@@ -41,38 +53,66 @@ public class GameWindow {
             }
         }
 
-        frame.add(turnLabel, BorderLayout.NORTH);
+        frame.add(topPanel, BorderLayout.NORTH);
         frame.add(boardPanel, BorderLayout.CENTER);
+
+        turnTimer = new Timer(1000, e -> tick());
         frame.setVisible(true);
+        turnTimer.start();
     }
 
-       private void handleClick(int row, int col) {
-       if (gameOver) {
-           return;
-       }
-       if (!board.placeMark(row, col, currentPlayer)) {
-           return;
-       }
-       squares[row][col].setText(String.valueOf(currentPlayer));
+    private void handleClick(int row, int col) {
+        if (gameOver) {
+            return;
+        }
+        if (!board.placeMark(row, col, currentPlayer)) {
+            return;
+        }
+        squares[row][col].setText(String.valueOf(currentPlayer));
 
-       char winner = board.getWinner();
-       if (winner != ' ') {
-           turnLabel.setText(winner + " wins!");
-           gameOver = true;
-           return;
-       }
-       if (board.isFull()) {
-           turnLabel.setText("Draw!");
-           gameOver = true;
-           return;
-       }
+        char winner = board.getWinner();
+        if (winner != ' ') {
+            turnLabel.setText(winner + " wins!");
+            endGame();
+            return;
+        }
+        if (board.isFull()) {
+            turnLabel.setText("Draw!");
+            endGame();
+            return;
+        }
 
-       currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
-       updateTurnLabel();
-   }
+        switchPlayer();
+    }
+
+    private void tick() {
+        secondsLeft--;
+        if (secondsLeft == 0) {
+            switchPlayer();
+        } else {
+            updateTimerLabel();
+        }
+    }
+
+    private void switchPlayer() {
+        currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+        updateTurnLabel();
+        secondsLeft = TURN_SECONDS;
+        updateTimerLabel();
+        turnTimer.restart();
+    }
+
+    private void endGame() {
+        gameOver = true;
+        turnTimer.stop();
+    }
 
     private void updateTurnLabel() {
         turnLabel.setText("Turn: " + currentPlayer);
+    }
+
+    private void updateTimerLabel() {
+        timerLabel.setText("Time: " + secondsLeft);
     }
 
     public static void main(String[] args) {
