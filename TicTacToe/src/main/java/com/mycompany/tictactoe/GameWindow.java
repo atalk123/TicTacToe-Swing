@@ -14,6 +14,7 @@ import java.awt.*;
 public class GameWindow {
     private final JButton[][] squares = new JButton[3][3];
     private final JLabel turnLabel = new JLabel();
+    private final Board board = new Board();
     private char currentPlayer = 'X';
 
     public GameWindow() {
@@ -31,6 +32,9 @@ public class GameWindow {
             for (int col = 0; col < 3; col++) {
                 JButton square = new JButton("");
                 square.setFont(new Font("Arial", Font.BOLD, 60));
+                final int r = row;
+                final int c = col;
+                square.addActionListener(e -> handleClick(r, c));
                 squares[row][col] = square;
                 boardPanel.add(square);
             }
@@ -39,6 +43,15 @@ public class GameWindow {
         frame.add(turnLabel, BorderLayout.NORTH);
         frame.add(boardPanel, BorderLayout.CENTER);
         frame.setVisible(true);
+    }
+
+    private void handleClick(int row, int col) {
+        if (!board.placeMark(row, col, currentPlayer)) {
+            return;
+        }
+        squares[row][col].setText(String.valueOf(currentPlayer));
+        currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+        updateTurnLabel();
     }
 
     private void updateTurnLabel() {
