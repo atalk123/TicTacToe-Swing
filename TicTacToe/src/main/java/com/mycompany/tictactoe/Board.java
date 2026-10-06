@@ -34,4 +34,40 @@ public class Board {
     public char getMark(int row, int col) {
         return cells[row][col];
     }
+
+    public char getWinner() {
+        for (int i = 0; i < 3; i++) {
+            char rowWinner = lineWinner(cells[i][0], cells[i][1], cells[i][2]);
+            if (rowWinner != ' ') {
+                return rowWinner;
+            }
+            char colWinner = lineWinner(cells[0][i], cells[1][i], cells[2][i]);
+            if (colWinner != ' ') {
+                return colWinner;
+            }
+        }
+        char diagWinner = lineWinner(cells[0][0], cells[1][1], cells[2][2]);
+        if (diagWinner != ' ') {
+            return diagWinner;
+        }
+        return lineWinner(cells[0][2], cells[1][1], cells[2][0]);
+    }
+
+    public boolean isFull() {
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                if (cells[row][col] == ' ') {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private char lineWinner(char a, char b, char c) {
+        if (a != ' ' && a == b && b == c) {
+            return a;
+        }
+        return ' ';
+    }
 }

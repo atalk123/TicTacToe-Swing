@@ -16,6 +16,7 @@ public class GameWindow {
     private final JLabel turnLabel = new JLabel();
     private final Board board = new Board();
     private char currentPlayer = 'X';
+    private boolean gameOver = false;
 
     public GameWindow() {
         JFrame frame = new JFrame("Tic Tac Toe");
@@ -45,14 +46,30 @@ public class GameWindow {
         frame.setVisible(true);
     }
 
-    private void handleClick(int row, int col) {
-        if (!board.placeMark(row, col, currentPlayer)) {
-            return;
-        }
-        squares[row][col].setText(String.valueOf(currentPlayer));
-        currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
-        updateTurnLabel();
-    }
+       private void handleClick(int row, int col) {
+       if (gameOver) {
+           return;
+       }
+       if (!board.placeMark(row, col, currentPlayer)) {
+           return;
+       }
+       squares[row][col].setText(String.valueOf(currentPlayer));
+
+       char winner = board.getWinner();
+       if (winner != ' ') {
+           turnLabel.setText(winner + " wins!");
+           gameOver = true;
+           return;
+       }
+       if (board.isFull()) {
+           turnLabel.setText("Draw!");
+           gameOver = true;
+           return;
+       }
+
+       currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+       updateTurnLabel();
+   }
 
     private void updateTurnLabel() {
         turnLabel.setText("Turn: " + currentPlayer);
