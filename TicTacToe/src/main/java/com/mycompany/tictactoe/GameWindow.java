@@ -19,7 +19,7 @@ public class GameWindow {
 
     public GameWindow() {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(420, 500);
+        frame.setSize(620, 700);
         frame.setLocationRelativeTo(null);
 
         MenuPanel menuPanel = new MenuPanel(this::startTwoPlayerGame, this::startComputerGame);
