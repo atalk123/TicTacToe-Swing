@@ -4,34 +4,43 @@
  */
 package com.mycompany.tictactoe;
 
-/**
- *
- * @author atalk
- */
 public class Board {
-    private final char[][] cells = new char[3][3];
+    public static final char EMPTY = ' ';
+    public static final char WALL = '#';
 
-    public Board() {
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
-                cells[row][col] = ' ';
+    private final int size;
+    private final int winLength;
+    private final char[][] cells;
+
+    public Board(int size, int winLength) {
+        this.size = size;
+        this.winLength = winLength;
+        this.cells = new char[size][size];
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                cells[row][col] = EMPTY;
             }
         }
     }
 
-    public boolean isEmpty(int row, int col) {
-        return cells[row][col] == ' ';
+    public int getSize() {
+        return size;
     }
 
-    public boolean placeMark(int row, int col, char player) {
+    public boolean isEmpty(int row, int col) {
+        return cells[row][col] == EMPTY;
+    }
+
+    public boolean placeMark(int row, int col, char mark) {
         if (!isEmpty(row, col)) {
             return false;
         }
-        cells[row][col] = player;
+        cells[row][col] = mark;
         return true;
     }
+
     public void clearCell(int row, int col) {
-        cells[row][col] = ' ';
+        cells[row][col] = EMPTY;
     }
 
     public char getMark(int row, int col) {
@@ -39,38 +48,42 @@ public class Board {
     }
 
     public char getWinner() {
-        for (int i = 0; i < 3; i++) {
-            char rowWinner = lineWinner(cells[i][0], cells[i][1], cells[i][2]);
-            if (rowWinner != ' ') {
-                return rowWinner;
-            }
-            char colWinner = lineWinner(cells[0][i], cells[1][i], cells[2][i]);
-            if (colWinner != ' ') {
-                return colWinner;
+        int[][] directions = {{0, 1}, {1, 0}, {1, 1}, {1, -1}};
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                char mark = cells[row][col];
+                if (mark == EMPTY || mark == WALL) {
+                    continue;
+                }
+                for (int[] d : directions) {
+                    if (hasLine(row, col, d[0], d[1], mark)) {
+                        return mark;
+                    }
+                }
             }
         }
-        char diagWinner = lineWinner(cells[0][0], cells[1][1], cells[2][2]);
-        if (diagWinner != ' ') {
-            return diagWinner;
-        }
-        return lineWinner(cells[0][2], cells[1][1], cells[2][0]);
+        return EMPTY;
     }
 
-    public boolean isFull() {
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
-                if (cells[row][col] == ' ') {
-                    return false;
-                }
+    private boolean hasLine(int row, int col, int dRow, int dCol, char mark) {
+        for (int i = 1; i < winLength; i++) {
+            int r = row + i * dRow;
+            int c = col + i * dCol;
+            if (r < 0 || r >= size || c < 0 || c >= size || cells[r][c] != mark) {
+                return false;
             }
         }
         return true;
     }
 
-    private char lineWinner(char a, char b, char c) {
-        if (a != ' ' && a == b && b == c) {
-            return a;
+    public boolean isFull() {
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                if (cells[row][col] == EMPTY) {
+                    return false;
+                }
+            }
         }
-        return ' ';
+        return true;
     }
 }
