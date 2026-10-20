@@ -1,6 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
 
 package com.mycompany.tictactoe;
 
@@ -21,12 +18,15 @@ public class GameWindow {
         MenuPanel menuPanel = new MenuPanel(
                 () -> startGame(GameMode.CLASSIC),
                 () -> startGame(GameMode.VS_COMPUTER),
-                () -> startGame(GameMode.ARCADE));
+                () -> startGame(GameMode.ARCADE),
+                () -> cards.show(screens, "help"));
+        HelpPanel helpPanel = new HelpPanel(this::showMenu);
         gamePanel = new GamePanel(this::showMenu);
 
         screens.setBackground(Theme.BACKGROUND);
         screens.add(menuPanel, "menu");
         screens.add(gamePanel, "game");
+        screens.add(helpPanel, "help");
 
         frame.add(screens);
         frame.setVisible(true);
@@ -46,4 +46,4 @@ public class GameWindow {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(GameWindow::new);
     }
-}
+}
