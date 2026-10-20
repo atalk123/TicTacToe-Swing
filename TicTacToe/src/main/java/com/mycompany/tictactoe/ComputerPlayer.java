@@ -4,10 +4,6 @@
  */
 package com.mycompany.tictactoe;
 
-/**
- *
- * @author atalk
- */
 public class ComputerPlayer {
     private final char me;
     private final char opponent;
@@ -20,9 +16,10 @@ public class ComputerPlayer {
     public int[] chooseMove(Board board) {
         int bestScore = Integer.MIN_VALUE;
         int[] bestMove = null;
+        int size = board.getSize();
 
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
                 if (board.isEmpty(row, col)) {
                     board.placeMark(row, col, me);
                     int score = minimax(board, 0, false);
@@ -50,9 +47,10 @@ public class ComputerPlayer {
             return 0;
         }
 
+        int size = board.getSize();
         int best = myTurn ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
                 if (board.isEmpty(row, col)) {
                     board.placeMark(row, col, myTurn ? me : opponent);
                     int score = minimax(board, depth + 1, !myTurn);

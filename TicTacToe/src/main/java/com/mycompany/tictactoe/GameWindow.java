@@ -4,10 +4,6 @@
 
 package com.mycompany.tictactoe;
 
-/**
- *
- * @author atalk
- */
 import javax.swing.*;
 import java.awt.*;
 
@@ -19,10 +15,13 @@ public class GameWindow {
 
     public GameWindow() {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(420, 500);
+        frame.setSize(480, 650);
         frame.setLocationRelativeTo(null);
 
-        MenuPanel menuPanel = new MenuPanel(this::startTwoPlayerGame, this::startComputerGame);
+        MenuPanel menuPanel = new MenuPanel(
+                () -> startGame(GameMode.CLASSIC),
+                () -> startGame(GameMode.VS_COMPUTER),
+                () -> startGame(GameMode.ARCADE));
         gamePanel = new GamePanel(this::showMenu);
 
         screens.add(menuPanel, "menu");
@@ -33,13 +32,8 @@ public class GameWindow {
         showMenu();
     }
 
-    private void startTwoPlayerGame() {
-        gamePanel.startNewGame(false);
-        cards.show(screens, "game");
-    }
-
-    private void startComputerGame() {
-        gamePanel.startNewGame(true);
+    private void startGame(GameMode mode) {
+        gamePanel.startNewGame(mode);
         cards.show(screens, "game");
     }
 
