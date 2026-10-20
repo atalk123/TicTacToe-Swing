@@ -24,6 +24,7 @@ public class GameWindow {
                 () -> startGame(GameMode.ARCADE));
         gamePanel = new GamePanel(this::showMenu);
 
+        screens.setBackground(Theme.BACKGROUND);
         screens.add(menuPanel, "menu");
         screens.add(gamePanel, "game");
 
@@ -45,4 +46,4 @@ public class GameWindow {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(GameWindow::new);
     }
-}
+}

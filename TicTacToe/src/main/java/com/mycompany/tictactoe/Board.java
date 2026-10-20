@@ -48,6 +48,14 @@ public class Board {
     }
 
     public char getWinner() {
+        int[][] line = getWinningCells();
+        if (line == null) {
+            return EMPTY;
+        }
+        return cells[line[0][0]][line[0][1]];
+    }
+
+    public int[][] getWinningCells() {
         int[][] directions = {{0, 1}, {1, 0}, {1, 1}, {1, -1}};
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
@@ -57,12 +65,16 @@ public class Board {
                 }
                 for (int[] d : directions) {
                     if (hasLine(row, col, d[0], d[1], mark)) {
-                        return mark;
+                        int[][] line = new int[winLength][];
+                        for (int i = 0; i < winLength; i++) {
+                            line[i] = new int[] {row + i * d[0], col + i * d[1]};
+                        }
+                        return line;
                     }
                 }
             }
         }
-        return EMPTY;
+        return null;
     }
 
     private boolean hasLine(int row, int col, int dRow, int dCol, char mark) {
@@ -86,4 +98,4 @@ public class Board {
         }
         return true;
     }
-}
+}
