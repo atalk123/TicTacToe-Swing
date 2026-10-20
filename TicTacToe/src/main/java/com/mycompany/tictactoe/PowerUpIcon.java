@@ -42,7 +42,7 @@ public class PowerUpIcon implements Icon {
     }
 
     private void drawBomb(Graphics2D g2) {
-        g2.setColor(new Color(40, 40, 40));
+        g2.setColor(new Color(200, 200, 215));
         g2.fillOval(4, 8, 22, 22);
         g2.setStroke(new BasicStroke(2.5f));
         g2.setColor(new Color(140, 90, 40));
@@ -67,7 +67,7 @@ public class PowerUpIcon implements Icon {
 
     private void drawDouble(Graphics2D g2) {
         g2.setStroke(new BasicStroke(3f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-        g2.setColor(new Color(40, 110, 200));
+        g2.setColor(Theme.O_COLOR);
         drawX(g2, 2, 6, 14);
         drawX(g2, 16, 12, 14);
     }

@@ -14,19 +14,21 @@ import java.util.Map;
 public class GamePanel extends JPanel {
     private static final int TURN_SECONDS = 10;
     private static final int COMPUTER_DELAY_MS = 500;
-    private static final Color WALL_COLOR = new Color(60, 60, 60);
-    private static final Color ACTIVE_COLOR = new Color(255, 215, 120);
 
     private final JPanel boardPanel = new JPanel();
     private final JPanel powerUpBar = new JPanel(new GridLayout(1, 0, 10, 0));
-    private final Map<PowerUp, JButton> powerUpButtons = new EnumMap<>(PowerUp.class);
+    private final JPanel buttonRow = new JPanel(new GridLayout(1, 0, 10, 0));
+    private final Map<PowerUp, ThemedButton> powerUpButtons = new EnumMap<>(PowerUp.class);
     private final Map<Character, EnumSet<PowerUp>> powerUpsLeft = new HashMap<>();
     private final JLabel turnLabel = new JLabel();
     private final JLabel timerLabel = new JLabel();
+    private final JLabel scoreLabel = new JLabel("", SwingConstants.CENTER);
+    private final ThemedButton playAgainButton = new ThemedButton("Play again");
     private final Timer turnTimer;
 
-    private JButton[][] squares;
+    private CellButton[][] squares;
     private Board board;
+    private GameMode mode;
     private ComputerPlayer computer;
     private PowerUp activePowerUp = null;
     private boolean powerUpUsedThisTurn = false;
@@ -34,37 +36,58 @@ public class GamePanel extends JPanel {
     private char currentPlayer = 'X';
     private boolean gameOver = false;
     private int secondsLeft = TURN_SECONDS;
+    private int xWins = 0;
+    private int oWins = 0;
+    private int draws = 0;
 
     public GamePanel(Runnable onBackToMenu) {
         setLayout(new BorderLayout());
+        setBackground(Theme.BACKGROUND);
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        Font labelFont = new Font("Arial", Font.BOLD, 20);
-        turnLabel.setFont(labelFont);
-        timerLabel.setFont(labelFont);
+        turnLabel.setFont(Theme.font(Font.BOLD, 24));
+        timerLabel.setFont(Theme.font(Font.BOLD, 20));
+        timerLabel.setForeground(Theme.TEXT_MUTED);
+        scoreLabel.setFont(Theme.font(Font.BOLD, 16));
+        scoreLabel.setForeground(Theme.TEXT_MUTED);
 
-        JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JPanel topPanel = new JPanel(new BorderLayout(0, 8));
+        topPanel.setOpaque(false);
+        topPanel.setBorder(BorderFactory.createEmptyBorder(0, 4, 10, 4));
         topPanel.add(turnLabel, BorderLayout.WEST);
         topPanel.add(timerLabel, BorderLayout.EAST);
+        topPanel.add(scoreLabel, BorderLayout.SOUTH);
 
-        powerUpBar.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
+        boardPanel.setOpaque(false);
+
+        powerUpBar.setOpaque(false);
         for (PowerUp powerUp : PowerUp.values()) {
-            JButton button = new JButton(buttonText(powerUp), new PowerUpIcon(powerUp));
+            ThemedButton button = new ThemedButton(buttonText(powerUp));
+            button.setIcon(new PowerUpIcon(powerUp));
+            button.setFont(Theme.font(Font.PLAIN, 13));
+            button.setBorder(BorderFactory.createEmptyBorder(8, 4, 8, 4));
             button.setVerticalTextPosition(SwingConstants.BOTTOM);
             button.setHorizontalTextPosition(SwingConstants.CENTER);
-            button.setFocusPainted(false);
             button.addActionListener(e -> togglePowerUp(powerUp));
             powerUpButtons.put(powerUp, button);
             powerUpBar.add(button);
         }
 
-        JButton menuButton = new JButton("Menu");
-        menuButton.setFont(new Font("Arial", Font.PLAIN, 20));
+        ThemedButton menuButton = new ThemedButton("Menu");
         menuButton.addActionListener(e -> onBackToMenu.run());
 
+        playAgainButton.setBaseColor(Theme.HIGHLIGHT);
+        playAgainButton.setForeground(Theme.BACKGROUND);
+        playAgainButton.addActionListener(e -> startRound());
+
+        buttonRow.setOpaque(false);
+        buttonRow.add(menuButton);
+
         JPanel bottomPanel = new JPanel(new BorderLayout(0, 10));
+        bottomPanel.setOpaque(false);
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         bottomPanel.add(powerUpBar, BorderLayout.NORTH);
-        bottomPanel.add(menuButton, BorderLayout.SOUTH);
+        bottomPanel.add(buttonRow, BorderLayout.SOUTH);
 
         add(topPanel, BorderLayout.NORTH);
         add(boardPanel, BorderLayout.CENTER);
@@ -74,6 +97,14 @@ public class GamePanel extends JPanel {
     }
 
     public void startNewGame(GameMode mode) {
+        this.mode = mode;
+        xWins = 0;
+        oWins = 0;
+        draws = 0;
+        startRound();
+    }
+
+    private void startRound() {
         board = new Board(mode.getBoardSize(), mode.getWinLength());
         computer = (mode == GameMode.VS_COMPUTER) ? new ComputerPlayer('O') : null;
         buildBoardButtons();
@@ -88,8 +119,11 @@ public class GamePanel extends JPanel {
         currentPlayer = 'X';
         gameOver = false;
         secondsLeft = TURN_SECONDS;
+        buttonRow.remove(playAgainButton);
+        buttonRow.revalidate();
         updateTurnLabel();
         updateTimerLabel();
+        updateScoreLabel();
         updatePowerUpButtons();
         turnTimer.restart();
     }
@@ -103,14 +137,11 @@ public class GamePanel extends JPanel {
         int size = board.getSize();
         boardPanel.removeAll();
         boardPanel.setLayout(new GridLayout(size, size));
-        squares = new JButton[size][size];
-        Font markFont = new Font("Arial", Font.BOLD, size == 3 ? 60 : 36);
+        squares = new CellButton[size][size];
 
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
-                JButton square = new JButton("");
-                square.setFont(markFont);
-                square.setFocusPainted(false);
+                CellButton square = new CellButton();
                 final int r = row;
                 final int c = col;
                 square.addActionListener(e -> handleClick(r, c));
@@ -142,7 +173,7 @@ public class GamePanel extends JPanel {
         if (!board.placeMark(row, col, currentPlayer)) {
             return;
         }
-        squares[row][col].setText(String.valueOf(currentPlayer));
+        squares[row][col].setMark(currentPlayer);
 
         if (checkGameEnd()) {
             return;
@@ -180,7 +211,7 @@ public class GamePanel extends JPanel {
             return;
         }
         board.clearCell(row, col);
-        squares[row][col].setText("");
+        squares[row][col].setMark(Board.EMPTY);
         consumeActivePowerUp();
         switchPlayer();
     }
@@ -189,7 +220,7 @@ public class GamePanel extends JPanel {
         if (!board.placeMark(row, col, Board.WALL)) {
             return;
         }
-        squares[row][col].setBackground(WALL_COLOR);
+        squares[row][col].setMark(Board.WALL);
         consumeActivePowerUp();
         if (checkGameEnd()) {
             return;
@@ -204,15 +235,27 @@ public class GamePanel extends JPanel {
     }
 
     private boolean checkGameEnd() {
-        char winner = board.getWinner();
-        if (winner != Board.EMPTY) {
+        int[][] winningCells = board.getWinningCells();
+        if (winningCells != null) {
+            char winner = board.getMark(winningCells[0][0], winningCells[0][1]);
+            for (int[] cell : winningCells) {
+                squares[cell[0]][cell[1]].setWinning(true);
+            }
+            if (winner == 'X') {
+                xWins++;
+            } else {
+                oWins++;
+            }
             endGame();
             turnLabel.setText(winner + " wins!");
+            turnLabel.setForeground(Theme.colorOf(winner));
             return true;
         }
         if (board.isFull()) {
+            draws++;
             endGame();
             turnLabel.setText("Draw!");
+            turnLabel.setForeground(Theme.TEXT);
             return true;
         }
         return false;
@@ -265,11 +308,16 @@ public class GamePanel extends JPanel {
         gameOver = true;
         activePowerUp = null;
         turnTimer.stop();
+        timerLabel.setText("");
+        updateScoreLabel();
         updatePowerUpButtons();
+        buttonRow.add(playAgainButton);
+        buttonRow.revalidate();
+        buttonRow.repaint();
     }
 
     private void updateTurnLabel() {
-        String text = "Turn: " + currentPlayer;
+        String text = currentPlayer + "'s turn";
         if (activePowerUp == PowerUp.BOMB) {
             text = currentPlayer + ": pick an " + opponent(currentPlayer) + " to remove";
         } else if (activePowerUp == PowerUp.WALL) {
@@ -278,29 +326,61 @@ public class GamePanel extends JPanel {
             text = currentPlayer + ": place 2 marks";
         }
         turnLabel.setText(text);
+        turnLabel.setForeground(Theme.colorOf(currentPlayer));
+        updateBoardHover();
     }
 
     private void updateTimerLabel() {
-        timerLabel.setText("Time: " + secondsLeft);
+        timerLabel.setText(secondsLeft + "s");
+    }
+
+    private void updateScoreLabel() {
+        scoreLabel.setText("X  " + xWins + "     Draws  " + draws + "     O  " + oWins);
+    }
+
+    private void updateBoardHover() {
+        int size = board.getSize();
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                squares[row][col].setClickable(canClick(row, col));
+                if (activePowerUp == PowerUp.WALL) {
+                    squares[row][col].setPreview(Board.WALL);
+                } else {
+                    squares[row][col].setPreview(currentPlayer);
+                }
+            }
+        }
+    }
+
+    private boolean canClick(int row, int col) {
+        if (gameOver || isComputerTurn()) {
+            return false;
+        }
+        if (activePowerUp == PowerUp.BOMB) {
+            return board.getMark(row, col) == opponent(currentPlayer);
+        }
+        return board.isEmpty(row, col);
     }
 
     private void updatePowerUpButtons() {
         EnumSet<PowerUp> available = powerUpsLeft.get(currentPlayer);
         for (PowerUp powerUp : PowerUp.values()) {
-            JButton button = powerUpButtons.get(powerUp);
+            ThemedButton button = powerUpButtons.get(powerUp);
             boolean usable = !gameOver && !powerUpUsedThisTurn && available.contains(powerUp);
             button.setEnabled(usable);
-            button.setForeground(usable ? Color.BLACK : Color.GRAY);
             if (powerUp == activePowerUp) {
-                button.setBackground(ACTIVE_COLOR);
+                button.setBaseColor(Theme.HIGHLIGHT);
+                button.setForeground(Theme.BACKGROUND);
             } else {
-                button.setBackground(UIManager.getColor("Button.background"));
+                button.setBaseColor(Theme.SURFACE);
+                button.setForeground(Theme.TEXT);
             }
         }
+        updateBoardHover();
     }
 
     private String buttonText(PowerUp powerUp) {
         return "<html><center><b>" + powerUp.getLabel() + "</b><br>"
                 + powerUp.getDescription() + "</center></html>";
     }
-}
+}
