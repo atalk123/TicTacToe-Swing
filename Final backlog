@@ -1,0 +1,65 @@
+Name: Create main menu window
+How to demo: Open program and show a list of 5 options.
+Notes: Use java swing
+
+Name: Create 3x3 board
+How to demo: In the main menu, click Player vs Player or Player vs Computer and show 9 squares that are clickable
+Notes: Use buttons for each square
+
+Name: Create 5x5 board
+How to demo: In the main menu, click Arcade and show 25 squares in a grid that are clickable
+Notes: Use buttons for each square
+
+Name: Show which player's turn it is
+How to demo: During the entirety of the game, it should display X's turn or O's turn in the top left corner depending on whose turn it is
+Notes: with maybe some nice looking bars on the screen but maybe not
+
+Name: Show player moves
+How to demo: Click a square and show X or O (or in arcade a wall) depending on player turn and power up
+Notes: Player take turns in Player vs Player and Arcade, and bot acts as O in Player vs Computer
+
+Name: Computer moves
+How to demo: Start a Player vs Computer game and take a turn and see the bot also takes a turn
+Notes: it should not be possible to win from the bot
+
+Name: Bomb power up
+How to demo: Start an Arcade game and make a move as X. Then click the bomb button in the bottom left and see it lights up. Then click the X that was placed and see it gets removed
+Notes: Power ups are single use during a game.
+
+Name: Wall power up
+How to demo: Start an Arcade game and click the wall button in the bottom centre and see it lights up. Then click a square on the board to place the wall. 
+The square will turn brown, indicating the prescence of a wall and no player can remove the wall.
+Notes: Power ups are single use during a game.
+
+Name: Double move power up
+How to demo: Start an Arcade game and click the double move button in the bottom right of the screen and see the three buttons go dark. Then click two squares on the board and see both get an X.
+Notes: Power ups are single use during a game.
+
+Name: Prevent invalid moves
+How to demo: Click an occupied square and see it doesn't change
+Notes: Don't allow occupied squares to change
+
+Name: Help window
+How to demo: In the main menu, click help. Then drag the window to be a bit taller. You'll see a nice explanation of how to play the game.
+Notes: Maybe scrolling should be implemented
+
+Name: Detect winner
+How to demo: Win by having 3 X's or O's in a row (in normal game, and 4 in arcade), horizontally, vertically, or diagonally
+Notes: Check rows, columns, diagonals, and display ''Win''
+
+Name: Detect draw
+How to demo: Fill the board without a winner
+Notes: Display "Draw"
+
+Name: Play again
+How to demo: in any game mode, finish a game. At the bottom a play again button appears. Click this button to clear the board and start a new game. 
+Notes:
+
+Name: Score counter
+How to demo: in any game mode, finish a game. At the top of the screen, are three counters keeping track of how many draws and wins were scored. 
+When Play Again is pressed, this counter should persist, and when you return to the main menu and start a game from there, the counter should reset to 0.
+Notes: very large numbers (99+) have not been tested and may not display correctly.
+
+Name: Add turn timer
+How to demo: Start a game and show a countdown timer for the current player's turn, starting from 10 seconds
+Notes: Timer counts down from 10 each turn and resets when the other player starts their turn
