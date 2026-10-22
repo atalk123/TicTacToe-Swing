@@ -2,6 +2,8 @@
 
 A Tic Tac Toe game made with Java Swing for the course Java Programming (2IP90) at TU/e. It has three game modes: Player vs Player, Player vs Computer, and Arcade with power-ups.
 
+GitHub repository: https://github.com/atalk123/TicTacToe-Swing
+
 ## Quick start
 
 ### 1. Install Java (skip if you already have it)
