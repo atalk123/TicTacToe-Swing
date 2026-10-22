@@ -51,6 +51,15 @@ Name: Detect draw
 How to demo: Fill the board without a winner
 Notes: Display "Draw"
 
+Name: Play again
+How to demo: in any game mode, finish a game. At the bottom a play again button appears. Click this button to clear the board and start a new game. 
+Notes:
+
+Name: Score counter
+How to demo: in any game mode, finish a game. At the top of the screen, are three counters keeping track of how many draws and wins were scored. 
+When Play Again is pressed, this counter should persist, and when you return to the main menu and start a game from there, the counter should reset to 0.
+Notes: very large numbers (99+) have not been tested and may not display correctly.
+
 Name: Add turn timer
 How to demo: Start a game and show a countdown timer for the current player's turn, starting from 10 seconds
 Notes: Timer counts down from 10 each turn and resets when the other player starts their turn
