@@ -11,7 +11,7 @@ How to demo: Shows X or O in the corner
 Notes: with maybe some nice looking bars on the screen but maybe not
 
 Name: Show player moves
-How to demo: Click a square and show X or O depending on player turn
+How to demo: Click a square and show X or O (or in arcade a wall) depending on player turn and power up
 Notes: Player take turns
 
 Name: Prevent invalid moves
@@ -19,7 +19,7 @@ How to demo: Click an occupied square and see it doesn't change
 Notes: Don't allow occupied squares to change
 
 Name: Detect winner
-How to demo: Win by having 3 X's or O's in a row, horizontally, vertically, or diagonally
+How to demo: Win by having 3 X's or O's in a row (in normal game, and 4 in arcade), horizontally, vertically, or diagonally
 Notes: Check rows, columns, diagonals, and display ''Win''
 
 Name: Detect draw
