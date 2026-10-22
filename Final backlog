@@ -1,13 +1,13 @@
-Name: Create game window
-How to demo: Open program and show tic tac toe board
+Name: Create main menu window
+How to demo: Open program and show a list of options.
 Notes: Use java swing
 
 Name: Create 3x3 board
-How to demo: Show 9 squares that are clickable
+How to demo: In the main menu, click Player vs Player or Player vs Computer and show 9 squares that are clickable
 Notes: Use buttons for each square
 
 Name: Show which player's turn it is
-How to demo: Shows X or O in the corner 
+How to demo: During the entirety of the game, it should display X's turn or O's turn in the top left corner depending on whose turn it is
 Notes: with maybe some nice looking bars on the screen but maybe not
 
 Name: Show player moves
