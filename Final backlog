@@ -1,1 +1,31 @@
+Name: Create game window
+How to demo: Open program and show tic tac toe board
+Notes: Use java swing
 
+Name: Create 3x3 board
+How to demo: Show 9 squares that are clickable
+Notes: Use buttons for each square
+
+Name: Show which player's turn it is
+How to demo: Shows X or O in the corner 
+Notes: with maybe some nice looking bars on the screen but maybe not
+
+Name: Show player moves
+How to demo: Click a square and show X or O depending on player turn
+Notes: Player take turns
+
+Name: Prevent invalid moves
+How to demo: Click an occupied square and see it doesn't change
+Notes: Don't allow occupied squares to change
+
+Name: Detect winner
+How to demo: Win by having 3 X's or O's in a row, horizontally, vertically, or diagonally
+Notes: Check rows, columns, diagonals, and display ''Win''
+
+Name: Detect draw
+How to demo: Fill the board without a winner
+Notes: Display "Draw"
+
+Name: Add turn timer
+How to demo: Start a game and show a countdown timer for the current player's turn, starting from 10 seconds
+Notes: Timer counts down from 10 each turn and resets when the other player starts their turn
