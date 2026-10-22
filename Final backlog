@@ -39,6 +39,10 @@ Name: Prevent invalid moves
 How to demo: Click an occupied square and see it doesn't change
 Notes: Don't allow occupied squares to change
 
+Name: Help window
+How to demo: In the main menu, click help. Then drag the window to be a bit taller. You'll see a nice explanation of how to play the game.
+Notes: Maybe scrolling should be implemented
+
 Name: Detect winner
 How to demo: Win by having 3 X's or O's in a row (in normal game, and 4 in arcade), horizontally, vertically, or diagonally
 Notes: Check rows, columns, diagonals, and display ''Win''
