@@ -22,6 +22,19 @@ Name: Computer moves
 How to demo: Start a Player vs Computer game and take a turn and see the bot also takes a turn
 Notes: it should not be possible to win from the bot
 
+Name: Bomb power up
+How to demo: Start an Arcade game and make a move as X. Then click the bomb button in the bottom left and see it lights up. Then click the X that was placed and see it gets removed
+Notes: Kinda pointless power up as the opponent probably will just put it back the next turn.
+
+Name: Wall power up
+How to demo: Start an Arcade game and click the wall button in the bottom centre and see it lights up. Then click a square on the board to place the wall. 
+The square will turn brown, indicating the prescence of a wall and no player can remove the wall.
+Notes: 
+
+Name: Double move power up
+How to demo: Start an Arcade game and click the double move button in the bottom right of the screen and see the three buttons go dark. Then click two squares on the board and see both get an X.
+Notes: 
+
 Name: Prevent invalid moves
 How to demo: Click an occupied square and see it doesn't change
 Notes: Don't allow occupied squares to change
