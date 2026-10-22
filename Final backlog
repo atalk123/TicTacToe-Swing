@@ -1,5 +1,5 @@
 Name: Create main menu window
-How to demo: Open program and show a list of options.
+How to demo: Open program and show a list of 5 options.
 Notes: Use java swing
 
 Name: Create 3x3 board
@@ -16,7 +16,11 @@ Notes: with maybe some nice looking bars on the screen but maybe not
 
 Name: Show player moves
 How to demo: Click a square and show X or O (or in arcade a wall) depending on player turn and power up
-Notes: Player take turns
+Notes: Player take turns in Player vs Player and Arcade, and bot acts as O in Player vs Computer
+
+Name: Computer moves
+How to demo: Start a Player vs Computer game and take a turn and see the bot also takes a turn
+Notes: it should not be possible to win from the bot
 
 Name: Prevent invalid moves
 How to demo: Click an occupied square and see it doesn't change
